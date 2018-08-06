@@ -64,7 +64,7 @@ ifKeepChIPdensityIntact | Optional. Default: True | Set to 'False' if you want t
 CNAnormalization | Optional. Default: True | Set to 'False' if you do not want to normalize the ChIP-seq/ATAC-seq signal for copy number alterations, e.g., when your sample is diploid and not coming from a tumor or cancer cell line.
 genomeLengthFile | Mandatory when reading .WIG | Provide a .fai file (e.g. [link](https://github.com/reineckef/quandico/blob/master/RPackage/hg19.fa.fai))
 
-####Output files:
+#### Output files:
 HMCan produces three main output files for narrow **peaks**, larger **regions** with the signal, and whole genome density.
 
 Peaks file is in .narrowPeak format (https://genome.ucsc.edu/FAQ/FAQformat.html#format12) and regions file is in the .BED format.
@@ -79,7 +79,7 @@ Output name | Optional or default | Format | Comment
 **_CNV_profile.txt** | Default | ControlFREEC _ratio.txt format | Copy number profile from Input or ChIP (if Input is not profided). Can be visualized with http://boevalab.com/FREEC/tutorial.html#VISUAL
 
 
-####Citation:
+#### Citation:
 If you use HMCan please cite "HMCan: a method for detecting chromatin modifications in cancer samples using ChIP-seq data"
 Haitham Ashoor; Aurelie Herault; Aurelie Kamoun; Francois Radvanyi; Vladimir B. Bajic; Emmanuel Barillot; Valentina Boeva.
 Bioinformatics, 2013, 29(23):2979-86. doi: 10.1093/bioinformatics/btt524
