@@ -1,0 +1,21 @@
+format bam 
+GCIndex <check data folder for examples>
+genomePath <path to your reference genome>
+minLength 100
+medLength 250
+maxLength 400
+smallBinLength 50
+largeBinLength 100000
+pvalueThreshold 0.001
+mergeDistance 0
+iterationThreshold 5
+finalThreshold 0
+maxIter 20
+PosteriorProb 0.99
+PrintWig True
+PrintPosterior True
+blackListFile <check data folder for examples>
+PrintBedGraph False
+CallPeaks True
+pairedEnds False
+RemoveDuplicates True

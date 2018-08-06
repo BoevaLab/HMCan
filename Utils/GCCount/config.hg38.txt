@@ -1,0 +1,50 @@
+[general]
+
+#set a window size and step. Please, use the same value if you generate a GC-content file for HMCan or HMCan-diff:
+
+window = 25000
+step = 25000
+
+#set an output directory
+
+outputDir = .
+
+#set a directory(!) with fasta files; one file per chromosome
+chrFiles = Human/hg38/chromosomes/
+
+#set a file with chromosome lengths: tab delimited: 
+
+#1	chr1	248956422
+#2	chr2	242193529
+#3	chr3	198295559
+#4	chr4	190214555
+#5	chr5	181538259
+#6	chr6	170805979
+#7	chr7	159345973
+#8	chr8	145138636
+#9	chr9	138394717
+#10	chr10	133797422
+#11	chr11	135086622
+#12	chr12	133275309
+#13	chr13	114364328
+#14	chr14	107043718
+#15	chr15	101991189
+#16	chr16	90338345
+#17	chr17	83257441
+#18	chr18	80373285
+#19	chr19	58617616
+#20	chr20	64444167
+#21	chr21	46709983
+#22	chr22	50818468
+#23	chrX	156040895
+#24	chrY	57227415
+
+chrLenFile = Human/hg38/hg38.len
+
+#set a GEM mappability file; for example extracted from http://xfer.curie.fr/get/7hZIk1C63h0/hg19_len100bp.tar.gz or http://xfer.curie.fr/get/fdwcA3QfU5a/GEM_mapp_hg19.tar.gz :
+
+gemMappabilityFile = Human/hg38/GEM_mappability/out100m2_hg38.gem
+
+########################################################################################################################################
+#to download files for different genome verions, please go to the Control-FREEC webpage: http://boevalab.com/FREEC/tutorial.html#install
+########################################################################################################################################

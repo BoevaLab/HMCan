@@ -1,0 +1,42 @@
+#################################################################################################
+			gccount - a tool to calculate GC-content per window
+#################################################################################################
+
+INSTALLATION:
+
+o   Under LINUX 64bit, use binary version "gccount"
+
+o   Under LINUX 32bit, remove tag "-m64" from the "Makefile" and type "make" in the command line to recompile the code.
+
+
+*************************************************************************************************
+GEM mappability files can be downloaded from:
+Download mappability tracks if you want to include mappability information:
+    * up to 2 mismatches, hg19: http://xfer.curie.fr/get/fdwcA3QfU5a/GEM_mapp_hg19.tar.gz
+    * up to 2 mismatches, hg18: http://xfer.curie.fr/get/TGT7dAsQOTc/GEM_mapp_hg18.tar.gz
+    * up to 2 mismatches, hg17: http://xfer.curie.fr/get/6Eh2uMBlHdl/GEM_mapp_hg17.tar.gz 
+Don't forget to extract files from the archive! You can also generate a mappability track for other genomes using GEM. 
+*************************************************************************************************
+#################################################################################################
+
+RUNNING:
+
+o   Modify config.txt according to your needs. Type in the command line:
+
+  gccount -conf config.txt
+
+#################################################################################################
+
+READING THE OUTPUT:
+
+o   In the resulting GC_profile.cnp
+
+column 1:  chromosome
+column 2:  starting position of the window
+column 3:  GC-content
+column 4:  percentage of mappable positions per window (i.e., non-N letters)
+column 5*: presentage of uniquely mappable positions per window
+
+* column 5 will be present if you specify "gemMappabilityFile" in the config.txt
+
+
