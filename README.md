@@ -1,15 +1,15 @@
-##HMCan: detection of histone modifications in cancer samples
+## HMCan: detection of histone modifications in cancer samples
 
 **Authors:** Haitham Ashoor, Valentina Boeva
 **Contact:** haitham.ashoor @ jax . org, Valentina.Boeva @ inserm . fr
 
-###Compilation:
+### Compilation:
 In order to compile HMCan on your system use the provided make file with HMCan
 In order to complie the HMCan, write the following command:
 
 `make`
 
-###Running HMCan:
+### Running HMCan:
 You can run HMCan using the following command:
 
 `./HMCan <TargetFile> <ControlFile> <Configuration file> <Name>`
@@ -26,7 +26,7 @@ If you do not have Input data, or your input file is a .WIG, use can run HMCan w
 **Name**: prefix name for the output files. All output files will have this name as prefix. Add here the output directory path as well!
 
 
-####Configuration file:
+#### Configuration file:
 In configuration file you can provide parameters for HMCan algorithm,
 the description of the parameters is described below.
 
