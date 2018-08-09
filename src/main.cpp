@@ -30,7 +30,7 @@ using namespace std;
 #include"Reader.h"
 #include "HMCan.h"
 #include "Parser.h"
-const double HMCAN_VERSION = 1.41;
+const double HMCAN_VERSION = 1.42;
 
 static void print_version()
 {

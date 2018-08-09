@@ -237,7 +237,7 @@ void Profiler::build_single_profile(vector<DNA_fragment >& tags, string chr, boo
         }
 	}
 
-	if (pairedEnds_) { //divide density by 2 for PE datasets:
+	if (pairedEnds_ && isChIPseq_) { //divide density by 2 for PE datasets:
         for(int i=0;i<sampled_sizes[chr];i++){
             if(targetORcontrol)
                 sampled_target_density[chr][i] =sampled_target_density[chr][i]/2.0;
