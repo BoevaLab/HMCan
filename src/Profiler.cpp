@@ -479,7 +479,7 @@ void Profiler::build_profile(map<string,vector<DNA_fragment > >& data, map<strin
 	}
     if (isChIPseq_){
         cout<<"Normalize for GC content bias and noise ratio........."<<endl;
-        call_peaks(GC_mergeDist);
+        call_peaks(GC_mergeDist); // XXX
         Normalize_GC();
     } else {
         cout<<"Will not normalize for GC-content bias and noise ratio........."<<endl;
@@ -788,7 +788,8 @@ void Profiler::Normalize_GC(){
 				}
 				sort(density[i].begin(),density[i].end());
 				float sum=0;
-				for(unsigned int j=percent_to_remove;j<density[i].size()-percent_to_remove;j++){
+
+  				for(unsigned int j=percent_to_remove;j<density[i].size()-percent_to_remove;j++){
 					sum+=density[i][j];
 					chip_windows_count[i]++;
 				}
@@ -796,20 +797,22 @@ void Profiler::Normalize_GC(){
 				if (chip_windows_count[i]<10) {chip_windows_count[i]=0;chip_accum_density[i] =0;} //ignore GC-bin that are very rare
         }
 
-    startum_windows=0;
-    for(int i=0;i<27;i++){
-        GC_stratum+=chip_accum_density[i];
-        startum_windows+=chip_windows_count[i];
-    }
+//    startum_windows=0;
+    int minGCPercentoConsider=27; //should be below 35 but >0
+    int maxGCPercentoConsider=75; //should be above 66 but <100
+//    for(int i=0;i<27;i++){
+//        GC_stratum+=chip_accum_density[i];
+//        startum_windows+=chip_windows_count[i];
+//    }
 
-    for(int i=0;i<27;i++)
-        chip_percent[i] = GC_stratum/startum_windows;
 
-
-    for(int i=28;i<35;i+=2){
+    for(int i=(minGCPercentoConsider+1);i<=35;i+=2){
 			GC_stratum=(chip_accum_density[i]+chip_accum_density[i-1])/(chip_windows_count[i]+chip_windows_count[i-1]);
 			chip_percent[i] = chip_percent[i-1] = GC_stratum;
     }
+
+    for(int i=0;i<minGCPercentoConsider;i++)
+        chip_percent[i] =chip_percent[minGCPercentoConsider]; // used to be until v1.43: =GC_stratum/startum_windows;
 
 
     for(int i=35;i<66;i++){
@@ -822,20 +825,20 @@ void Profiler::Normalize_GC(){
 
 
 
-    for(int i = 66;i<75;i+=2){
+    for(int i = 66;i<maxGCPercentoConsider;i+=2){
         GC_stratum=(chip_accum_density[i]+chip_accum_density[i-1])/(chip_windows_count[i]+chip_windows_count[i-1]);
         chip_percent[i] = chip_percent[i-1] = GC_stratum;
     }
 
-    GC_stratum=0;
-    startum_windows=0;
-    for(int i=75;i<101;i++){
-			GC_stratum+=chip_accum_density[i];
-			startum_windows+=chip_windows_count[i];
-    }
+//    GC_stratum=0;
+//    startum_windows=0;
+//    for(int i=maxGCPercentoConsider;i<101;i++){
+//			GC_stratum+=chip_accum_density[i];
+//			startum_windows+=chip_windows_count[i];
+//    }
 
-    for(int i=75;i<101;i++)
-        chip_percent[i] = GC_stratum/startum_windows;
+    for(int i=maxGCPercentoConsider;i<101;i++)
+        chip_percent[i] = chip_percent[maxGCPercentoConsider-1];//used to be until v1.43: =GC_stratum/startum_windows;
 
 	density.clear();
 
@@ -874,42 +877,43 @@ void Profiler::Normalize_GC(){
 		}
 
 
-	startum_windows=0;
-	for(int i=0;i<21;i++){
-		GC_stratum+=control_accum_density[i];
-		startum_windows+=control_windows_count[i];
-	}
-
-	for(int i=0;i<21;i++)
-		control_percent[i] = GC_stratum/startum_windows;
+//	startum_windows=0;
+//	for(int i=0;i<21;i++){
+//		GC_stratum+=control_accum_density[i];
+//		startum_windows+=control_windows_count[i];
+//	}
 
 
-	for(int i=22;i<35;i+=2){
+	for(int i=minGCPercentoConsider;i<=35;i+=2){
 		GC_stratum=(control_accum_density[i]+control_accum_density[i-1])/(control_windows_count[i]+control_windows_count[i-1]);
 		control_percent[i] = control_percent[i-1] = GC_stratum;
 	}
+
+	for(int i=0;i<minGCPercentoConsider;i++)
+		control_percent[i] =control_percent[minGCPercentoConsider]; // = GC_stratum/startum_windows;
+
 
 	for(int i=35;i<66;i++){
 		control_percent[i]=control_accum_density[i]/control_windows_count[i];
 	}
 
 
-	for(int i = 66;i<75;i+=2){
+	for(int i = 66;i<maxGCPercentoConsider;i+=2){
 		GC_stratum=(control_accum_density[i]+control_accum_density[i-1])/(control_windows_count[i]+control_windows_count[i-1]);
 		control_percent[i] = control_percent[i-1] = GC_stratum;
 
 	}
 
 
-	GC_stratum=0;
-	startum_windows=0;
-	for(int i=75;i<101;i++){
-		GC_stratum+=control_accum_density[i];
-		startum_windows+=control_windows_count[i];
-	}
+//	GC_stratum=0;
+//	startum_windows=0;
+//	for(int i=75;i<101;i++){
+//		GC_stratum+=control_accum_density[i];
+//		startum_windows+=control_windows_count[i];
+//	}
 
-	for(int i=75;i<101;i++)
-		control_percent[i] = GC_stratum/startum_windows;
+	for(int i=maxGCPercentoConsider;i<101;i++)
+		control_percent[i] = control_percent[maxGCPercentoConsider-1];// GC_stratum/startum_windows;
  }
 
 	for (int i=0;i<101;i++){
@@ -971,10 +975,10 @@ void Profiler::Normalize_GC(){
             for(int i=0;i<sampled_sizes[(*chr_it).first];i++)
                 if ((*chr_it).second[i] !=-1 && sampled_GC[(*chr_it).first][i]!=-1){
                         int index = (int)(sampled_GC[(*chr_it).first][i]*100);
-                        if (index>=final_lower && index<=final_upper) {
+                        //if (index>=final_lower && index<=final_upper) {  // will not check this condition starting from v1.43
 							if (chip_percent[index]!=0)
 								(*chr_it).second[i] = (*chr_it).second[i]*chip_lambda/chip_percent[index];
-						}
+						//}
 						//else
 						//	(*chr_it).second[i]=-1;
 				}
@@ -985,10 +989,10 @@ void Profiler::Normalize_GC(){
 				for(int i=0;i< sampled_sizes[(*chr_it).first];i++)
 					if ((*chr_it).second[i] !=-1 && sampled_GC[(*chr_it).first][i]!=-1){
 						int index = (int)(sampled_GC[(*chr_it).first][i]*100);
-						if (index>=final_lower && index<=final_upper){
+//						if (index>=final_lower && index<=final_upper){ // will not check this condition starting from v1.43
 							if (control_percent[index]!=0)
 								(*chr_it).second[i] = (*chr_it).second[i]*control_lambda/control_percent[index];
-						}
+//						}
 						//else
 						//	(*chr_it).second[i]=-1;
                     }
@@ -999,20 +1003,20 @@ void Profiler::Normalize_GC(){
 				for(int i=0;i< sampled_sizes[(*chr_it).first];i++)
 					if ((*chr_it).second[i] !=-1 && sampled_GC[(*chr_it).first][i]!=-1){
 						int index = (int)(sampled_GC[(*chr_it).first][i]*100);
-						if (index>=final_lower && index<=final_upper){
+//						if (index>=final_lower && index<=final_upper){// will not check this condition starting from v1.43
 							if (control_percent[index]!=0)
 								(*chr_it).second[i] = (*chr_it).second[i]*control_lambda/control_percent[index];
-						}
+//						}
                     }
             }
             for(chr_it=sampled_control_density2.begin();chr_it!=sampled_control_density2.end();++chr_it){
 				for(int i=0;i< sampled_sizes[(*chr_it).first];i++)
 					if ((*chr_it).second[i] !=-1 && sampled_GC[(*chr_it).first][i]!=-1){
 						int index = (int)(sampled_GC[(*chr_it).first][i]*100);
-						if (index>=final_lower && index<=final_upper){
+//						if (index>=final_lower && index<=final_upper){// will not check this condition starting from v1.43
 							if (control_percent[index]!=0)
 								(*chr_it).second[i] = (*chr_it).second[i]*control_lambda/control_percent[index];
-						}
+//						}
                     }
             }
         }
@@ -1046,7 +1050,7 @@ void Profiler::calculate_GC_sampled_bins(string chr,string& chr_seq){
 	sampled_GC[chr] = new float[sampled_sizes[chr]];
 
 	for(int i=0;i<sampled_sizes[chr];i++){
-		int position = i*bin_length+bin_length;
+		int position = i*bin_length; // up to version 1.43 (and I don't know why it was like this before): int position = i*bin_length+bin_length;
 		int start = position-med < 0 ? 0:position-med;
 		int length = position+med <= sizes[chr]? 2*med:sizes[chr]-position+1;
 		float GC = calculate_GC(chr_seq,start,length);
@@ -1261,7 +1265,7 @@ void Profiler::call_peaks(int mergeDist){
                 }
         }
         float quantileToRemove = 1-ATACSEQPEAKPROP;
-        if (isChIPseq_) quantileToRemove=1-CHIPSEQPEAKPROP;
+        if (isChIPseq_) quantileToRemove=1-CHIPSEQPEAKPROP;  // commented as it was removing too few "noise" peaks
         sort(densities.begin(), densities.end());
         double sum_of_elems = 0; int elCount=0;
         int maxElementToTake=floor(densities.size()*quantileToRemove);
@@ -1400,13 +1404,20 @@ void Profiler::print_wig(string name){
     	string chr = (*ii).chr;
     	wig_file<<"fixedStep chrom="<<chr<<" start="<<start<<" step="<<bin_length<<endl;
 
-    	for(unsigned int i=0;i<(*ii).values.size();i++){
+      //  cout << "DEBUG: "<<"fixedStep chrom="<<chr<<" start="<<start<<" step="<<bin_length<<endl;
+
+        unsigned int numberOfElementsInObservation=(*ii).values.size();
+
+     //   cout << "DEBUG: numberOfElementsInObservation = "<<numberOfElementsInObservation<<endl;
+    //    cout << "DEBUG: maximal start position = "<<sizes[chr]-bin_length<<endl;
+
+    	for(unsigned int i=0;i<numberOfElementsInObservation;i++){
     		if (start < sizes[chr]-bin_length)
-    			wig_file<<(*ii).values[i]<<endl;
+    			wig_file<<(*ii).values[i]<<endl; //XXX
     		else
     			break;
     		start+=bin_length;
-
+           // cerr << "DEBUG: printing current position: " << chr <<" : start " <<start <<endl;
     	}
     	wig_file<<endl;
     }
