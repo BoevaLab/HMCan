@@ -22,7 +22,6 @@ http://www.fsf.org/licensing/licenses
 #include<iterator>
 #include<algorithm>
 #include <string>
-#include <iostream>
 #include <iomanip>
 using namespace std;
 
@@ -30,7 +29,7 @@ using namespace std;
 #include"Reader.h"
 #include "HMCan.h"
 #include "Parser.h"
-const double HMCAN_VERSION = 1.43;
+const double HMCAN_VERSION = 1.44;
 
 static void print_version()
 {

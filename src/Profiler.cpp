@@ -239,11 +239,13 @@ void Profiler::build_single_profile(vector<DNA_fragment >& tags, string chr, boo
 
 	if (pairedEnds_ && isChIPseq_) { //divide density by 2 for PE datasets:
         for(int i=0;i<sampled_sizes[chr];i++){
-            if(targetORcontrol)
-                sampled_target_density[chr][i] =sampled_target_density[chr][i]/2.0;
-            else
-                sampled_control_density[chr][i]=sampled_control_density[chr][i]/2.0;
 
+
+            if(targetORcontrol) {
+                sampled_target_density[chr][i] =sampled_target_density[chr][i]/2.0;
+            } else {
+                sampled_control_density[chr][i]=sampled_control_density[chr][i]/2.0;
+            }
             if(targetORcontrol==0 && calculateEmpiricalPvalue_) {
                 sampled_control_density1[chr][i]=sampled_control_density1[chr][i]/2.0;
                 sampled_control_density2[chr][i]=sampled_control_density2[chr][i]/2.0;
@@ -258,16 +260,17 @@ void Profiler::build_single_profile(vector<DNA_fragment >& tags, string chr, boo
             int bin_index = index/large_bin_size;
             float median = medians[chr][bin_index];
             if(median>0.3){ // check for low copy number if found assign unknown label for that
-                if (targetORcontrol)
+                if (targetORcontrol){
                     sampled_target_density[chr][i] =sampled_target_density[chr][i]/median;
-                else
+                }else {
                     sampled_control_density[chr][i]=sampled_control_density[chr][i]/median;
-
+                }
                 if(targetORcontrol==0 && calculateEmpiricalPvalue_ ) {
                     sampled_control_density1[chr][i]=sampled_control_density1[chr][i]/median;
                     sampled_control_density2[chr][i]=sampled_control_density2[chr][i]/median;
                 }
             }
+
         }
     }
 
@@ -800,6 +803,7 @@ void Profiler::Normalize_GC(){
 //    startum_windows=0;
     int minGCPercentoConsider=27; //should be below 35 but >0
     int maxGCPercentoConsider=75; //should be above 66 but <100
+
 //    for(int i=0;i<27;i++){
 //        GC_stratum+=chip_accum_density[i];
 //        startum_windows+=chip_windows_count[i];
@@ -968,6 +972,8 @@ void Profiler::Normalize_GC(){
 		if (hasControl_) control_lambda+=control_percent[i]*control_windows_count[i]/control_total_windows;
 	}
 
+	float minScalingFactor = 0.25;
+	float maxScalingFactor = 1/0.25;
 
 	if (chip_lambda!=0 && !hasControl_ || chip_lambda!=0 && control_lambda!=0 && hasControl_){
 //correcting here
@@ -976,8 +982,14 @@ void Profiler::Normalize_GC(){
                 if ((*chr_it).second[i] !=-1 && sampled_GC[(*chr_it).first][i]!=-1){
                         int index = (int)(sampled_GC[(*chr_it).first][i]*100);
                         //if (index>=final_lower && index<=final_upper) {  // will not check this condition starting from v1.43
-							if (chip_percent[index]!=0)
-								(*chr_it).second[i] = (*chr_it).second[i]*chip_lambda/chip_percent[index];
+							if (chip_percent[index]!=0) {
+                                float scalingFactor=chip_lambda/chip_percent[index];
+                                if (scalingFactor<minScalingFactor)
+                                    scalingFactor=minScalingFactor;
+                                if (scalingFactor>maxScalingFactor)
+                                    scalingFactor=maxScalingFactor;
+								(*chr_it).second[i] = (*chr_it).second[i]*scalingFactor;
+							}
 						//}
 						//else
 						//	(*chr_it).second[i]=-1;
@@ -990,8 +1002,14 @@ void Profiler::Normalize_GC(){
 					if ((*chr_it).second[i] !=-1 && sampled_GC[(*chr_it).first][i]!=-1){
 						int index = (int)(sampled_GC[(*chr_it).first][i]*100);
 //						if (index>=final_lower && index<=final_upper){ // will not check this condition starting from v1.43
-							if (control_percent[index]!=0)
-								(*chr_it).second[i] = (*chr_it).second[i]*control_lambda/control_percent[index];
+							if (control_percent[index]!=0) {
+                                float scalingFactor=control_lambda/control_percent[index];
+                                if (scalingFactor<minScalingFactor)
+                                    scalingFactor=minScalingFactor;
+                                if (scalingFactor>maxScalingFactor)
+                                    scalingFactor=maxScalingFactor;
+								(*chr_it).second[i] = (*chr_it).second[i]*scalingFactor;
+							}
 //						}
 						//else
 						//	(*chr_it).second[i]=-1;
@@ -1004,8 +1022,14 @@ void Profiler::Normalize_GC(){
 					if ((*chr_it).second[i] !=-1 && sampled_GC[(*chr_it).first][i]!=-1){
 						int index = (int)(sampled_GC[(*chr_it).first][i]*100);
 //						if (index>=final_lower && index<=final_upper){// will not check this condition starting from v1.43
-							if (control_percent[index]!=0)
-								(*chr_it).second[i] = (*chr_it).second[i]*control_lambda/control_percent[index];
+							if (control_percent[index]!=0){
+                                float scalingFactor=control_lambda/control_percent[index];
+                                if (scalingFactor<minScalingFactor)
+                                    scalingFactor=minScalingFactor;
+                                if (scalingFactor>maxScalingFactor)
+                                    scalingFactor=maxScalingFactor;
+								(*chr_it).second[i] = (*chr_it).second[i]*scalingFactor;
+							}
 //						}
                     }
             }
@@ -1014,8 +1038,14 @@ void Profiler::Normalize_GC(){
 					if ((*chr_it).second[i] !=-1 && sampled_GC[(*chr_it).first][i]!=-1){
 						int index = (int)(sampled_GC[(*chr_it).first][i]*100);
 //						if (index>=final_lower && index<=final_upper){// will not check this condition starting from v1.43
-							if (control_percent[index]!=0)
-								(*chr_it).second[i] = (*chr_it).second[i]*control_lambda/control_percent[index];
+							if (control_percent[index]!=0){
+                                float scalingFactor=control_lambda/control_percent[index];
+                                if (scalingFactor<minScalingFactor)
+                                    scalingFactor=minScalingFactor;
+                                if (scalingFactor>maxScalingFactor)
+                                    scalingFactor=maxScalingFactor;
+								(*chr_it).second[i] = (*chr_it).second[i]*scalingFactor;
+							}
 //						}
                     }
             }
