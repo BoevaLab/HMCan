@@ -1019,12 +1019,13 @@ float round_by_ploidy(float value, int ploidy) {
 	return float(int(value*ploidy))/ploidy;
 }
 
-int round(float r) {
-    return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
-}
+//int round(float r) {
+//    return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
+//}
 //int round(double r) {
 //    return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
 //}
+//round is now in std
 
 
 string pathAppend(const string& p1, const string& p2) {

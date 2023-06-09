@@ -74,7 +74,8 @@ int isN (const char & a) ;
 float polynomial(const float x, const double a, const double b, const double c); //ax^2+bx+c
 float polynomial(const float x, const double a0, const double a1, const double a2, const double a3);//a0x^3+a1x^2+a2x+a3
 float polynomial(const float x, const double * a, double ratio, int degree); //any degree
-int round(float r);
+//int round(float r);
+//round is now in std
 void processChrName(std::string & chr) ;
 size_t strccnt(const char *s, int c);
 
